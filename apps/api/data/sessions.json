@@ -1,0 +1,450 @@
+[
+  {
+    "sessionId": "ses_d7091cd27ad94ade",
+    "disease": "asthma",
+    "location": "Delhi",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:11:18.354Z",
+    "updatedAt": "2026-04-15T16:11:18.354Z"
+  },
+  {
+    "sessionId": "ses_3f3343866e764852",
+    "disease": "lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [
+      {
+        "id": "msg_a55749a509a14af0",
+        "role": "user",
+        "content": "Latest treatment options and active trials",
+        "createdAt": "2026-04-15T16:14:36.962Z"
+      },
+      {
+        "id": "msg_759527c6608e4c2d",
+        "role": "assistant",
+        "content": "Here is an evidence-backed summary for educational use only:\n\nTop relevant publications:\n- Global, Regional, and National Cancer Incidence, Mortality, Years of Life Lost, Years Lived With Disability, and Disability-Adjusted Life-Years for 29 Cancer Groups, 1990 to 2017 [W3211488171] <h3>Importance</h3> Cancer and other noncommunicable diseases (NCDs) are now widely recognized as a threat to global development. The latest United Nations high-level meeting on NC\n- Machine Learning Methods for Small Data Challenges in Molecular Science [W4382516982] Small data are often used in scientific and engineering research due to the presence of various constraints, such as time, cost, ethics, privacy, security, and technical limitation\n- Enhancing Bioavailability and Stability of Curcumin Using Solid Lipid Nanoparticles (CLEN): A Covenant for Its Effectiveness [W3092909033] Curcumin, very rightly referred to as \"a wonder drug\" is proven to be efficacious in a variety of inflammatory disorders including cancers. Antiaging, anti-inflammatory, antioxidan\n- Global age-sex-specific all-cause mortality and life expectancy estimates for 204 countries and territories and 660 subnational locations, 1950-2023: a demographic analysis for the Global Burden of Disease Study 2023. [PMID:41092927] Comprehensive, comparable, and timely estimates of demographic metrics-including life expectancy and age-specific mortality-are essential for evaluating, understanding, and address\n\n\nPlease discuss any treatment or supplement decisions with a qualified clinician.",
+        "citations": [
+          {
+            "id": "W3211488171",
+            "source": "openalex",
+            "title": "Global, Regional, and National Cancer Incidence, Mortality, Years of Life Lost, Years Lived With Disability, and Disability-Adjusted Life-Years for 29 Cancer Groups, 1990 to 2017",
+            "authors": [
+              "Christina Fitzmaurice",
+              "Degu Abate",
+              "Naghmeh Abbasi",
+              "Hedayat Abbastabar",
+              "Foad Abd-Allah"
+            ],
+            "journal": "JAMA Oncology",
+            "year": 2019,
+            "abstract": "<h3>Importance</h3> Cancer and other noncommunicable diseases (NCDs) are now widely recognized as a threat to global development. The latest United Nations high-level meeting on NCDs reaffirmed this observation and also highlighted the slow progress in meeting the 2011 Political Declaration on the Prevention and Control of Noncommunicable Diseases and the third Sustainable Development Goal. Lack of situational analyses, priority setting, and budgeting have been identified as major obstacles in achieving these goals. All of these have in common that they require information on the local cancer epidemiology. The Global Burden of Disease (GBD) study is uniquely poised to provide these crucial data. <h3>Objective</h3> To describe cancer burden for 29 cancer groups in 195 countries from 1990 through 2017 to provide data needed for cancer control planning. <h3>Evidence Review</h3> We used the GBD study estimation methods to describe cancer incidence, mortality, years lived with disability, years of life lost, and disability-adjusted life-years (DALYs). Results are presented at the national level as well as by Socio-demographic Index (SDI), a composite indicator of income, educational attainment, and total fertility rate. We also analyzed the influence of the epidemiological vs the demographic transition on cancer incidence. <h3>Findings</h3> In 2017, there were 24.5 million incident cancer cases worldwide (16.8 million without nonmelanoma skin cancer [NMSC]) and 9.6 million cancer deaths. The majority of cancer DALYs came from years of life lost (97%), and only 3% came from years lived with disability. The odds of developing cancer were the lowest in the low SDI quintile (1 in 7) and the highest in the high SDI quintile (1 in 2) for both sexes. In 2017, the most common incident cancers in men were NMSC (4.3 million incident cases); tracheal, bronchus, and lung (TBL) cancer (1.5 million incident cases); and prostate cancer (1.3 million incident cases). The most common causes of cancer deaths and DALYs for men were TBL cancer (1.3 million deaths and 28.4 million DALYs), liver cancer (572 000 deaths and 15.2 million DALYs), and stomach cancer (542 000 deaths and 12.2 million DALYs). For women in 2017, the most common incident cancers were NMSC (3.3 million incident cases), breast cancer (1.9 million incident cases), and colorectal cancer (819 000 incident cases). The leading causes of cancer deaths and DALYs for women were breast cancer (601 000 deaths and 17.4 million DALYs), TBL cancer (596 000 deaths and 12.6 million DALYs), and colorectal cancer (414 000 deaths and 8.3 million DALYs). <h3>Conclusions and Relevance</h3> The national epidemiological profiles of cancer burden in the GBD study show large heterogeneities, which are a reflection of different exposures to risk factors, economic settings, lifestyles, and access to care and screening. The GBD study can be used by policy makers and other stakeholders to develop and improve national and local cancer control in order to achieve the global targets and improve equity in cancer care.",
+            "doi": "https://doi.org/10.1001/jamaoncol.2019.2996",
+            "url": "https://doi.org/10.1001/jamaoncol.2019.2996",
+            "relevanceScore": 8.55
+          },
+          {
+            "id": "W4382516982",
+            "source": "openalex",
+            "title": "Machine Learning Methods for Small Data Challenges in Molecular Science",
+            "authors": [
+              "Bozheng Dou",
+              "Zailiang Zhu",
+              "Ekaterina Merkurjev",
+              "Ke Lü",
+              "Long Chen"
+            ],
+            "journal": "Chemical Reviews",
+            "year": 2023,
+            "abstract": "Small data are often used in scientific and engineering research due to the presence of various constraints, such as time, cost, ethics, privacy, security, and technical limitations in data acquisition. However, big data have been the focus for the past decade, small data and their challenges have received little attention, even though they are technically more severe in machine learning (ML) and deep learning (DL) studies. Overall, the small data challenge is often compounded by issues, such as data diversity, imputation, noise, imbalance, and high-dimensionality. Fortunately, the current big data era is characterized by technological breakthroughs in ML, DL, and artificial intelligence (AI), which enable data-driven scientific discovery, and many advanced ML and DL technologies developed for big data have inadvertently provided solutions for small data problems. As a result, significant progress has been made in ML and DL for small data challenges in the past decade. In this review, we summarize and analyze several emerging potential solutions to small data challenges in molecular science, including chemical and biological sciences. We review both basic machine learning algorithms, such as linear regression, logistic regression (LR), <i>k</i>-nearest neighbor (KNN), support vector machine (SVM), kernel learning (KL), random forest (RF), and gradient boosting trees (GBT), and more advanced techniques, including artificial neural network (ANN), convolutional neural network (CNN), U-Net, graph neural network (GNN), Generative Adversarial Network (GAN), long short-term memory (LSTM), autoencoder, transformer, transfer learning, active learning, graph-based semi-supervised learning, combining deep learning with traditional machine learning, and physical model-based data augmentation. We also briefly discuss the latest advances in these methods. Finally, we conclude the survey with a discussion of promising trends in small data challenges in molecular science.",
+            "doi": "https://doi.org/10.1021/acs.chemrev.3c00189",
+            "url": "https://doi.org/10.1021/acs.chemrev.3c00189",
+            "relevanceScore": 7.35
+          },
+          {
+            "id": "W3092909033",
+            "source": "openalex",
+            "title": "Enhancing Bioavailability and Stability of Curcumin Using Solid Lipid Nanoparticles (CLEN): A Covenant for Its Effectiveness",
+            "authors": [
+              "Tanvi Gupta",
+              "Joga Singh",
+              "Sandeep Kaur",
+              "Simarjot Kaur Sandhu",
+              "Gurpal Singh"
+            ],
+            "journal": "Frontiers in Bioengineering and Biotechnology",
+            "year": 2020,
+            "abstract": "Curcumin, very rightly referred to as \"a wonder drug\" is proven to be efficacious in a variety of inflammatory disorders including cancers. Antiaging, anti-inflammatory, antioxidant, antitumor, chemosensitizing, P-gp efflux inhibiting, and antiproliferative activity are some of the striking features of curcumin, highlighting its importance in chemotherapy. Curcumin inhibits Bcl-2, Bcl-XL, VEGF, c-My<i>c</i>, ICAM-1, EGFR, STAT3 phosphorylation, and cyclin D1 genes involved in the various stages of breast, prostate, and gastric cancer proliferation, angiogenesis, invasion, and metastasis. The full therapeutic potential of curcumin however remains under explored mainly due to poor absorption, rapid metabolism and systemic elimination culminating in its poor bioavailability. Furthermore, curcumin is insoluble, unstable at various pH and is also prone to undergo photodegradation. Nanotechnology can help improve the therapeutic potential of drug molecules with compromised biopharmaceutical profiles. Solid lipid nanoparticles (SLNs) are the latest offshoot of nanomedicine with proven advantages of high drug payload, longer shelf life, biocompatibility and biodegradability, and industrial amenability of the production process. We successfully developed CLEN (Curcumin encapsulated lipidic nanoconstructs) containing 15 mg curcumin per ml of the SLN dispersion with highest (till date, to our knowledge) increase in solubility of curcumin in an aqueous system by 1.4 × 10<sup>6</sup> times as compared to its intrinsic solubility of 11 ng/ml and high drug loading (15% w/v with respect to lipid matrix). Zero-order release kinetics observed for CLEN versus first order release for free curcumin establish controlled release nature of the developed CLEN. It showed 69.78 times higher oral bioavailability with respect to free curcumin; 9.00 times higher than a bioavailable marketed formulation (CurcuWIN<sup>®</sup>). The formulation showed 104, 13.3, and 10-times enhanced stability at pH 6.8, 1.2, and 7.4, respectively. All these factors ensure the efficacy of CLEN in treating cancer and other inflammatory diseases.",
+            "doi": "https://doi.org/10.3389/fbioe.2020.00879",
+            "url": "https://doi.org/10.3389/fbioe.2020.00879",
+            "relevanceScore": 7.05
+          },
+          {
+            "id": "PMID:41092927",
+            "source": "pubmed",
+            "title": "Global age-sex-specific all-cause mortality and life expectancy estimates for 204 countries and territories and 660 subnational locations, 1950-2023: a demographic analysis for the Global Burden of Disease Study 2023.",
+            "authors": [],
+            "journal": "Lancet (London, England)",
+            "year": 2025,
+            "abstract": "Comprehensive, comparable, and timely estimates of demographic metrics-including life expectancy and age-specific mortality-are essential for evaluating, understanding, and addressing trends in population health. The COVID-19 pandemic highlighted the importance of timely and all-cause mortality estimates for being able to respond to changing trends in health outcomes, showing a strong need for demographic analysis tools that can produce all-cause mortality estimates more rapidly with more readily available all-age vital registration (VR) data. The Global Burden of Diseases, Injuries, and Risk Factors Study (GBD) is an ongoing research effort that quantifies human health by estimating a range of epidemiological quantities of interest across time, age, sex, location, cause, and risk. This study-part of the latest GBD release, GBD 2023-aims to provide new and updated estimates of all-cause mortality and life expectancy for 1950 to 2023 using a novel statistical model that accounts for complex correlation structures in demographic data across age and time. We used 24 025 data sources from VR, sample registration, surveys, censuses, and other sources to estimate all-cause mortality for males, females, and all sexes combined across 25 age groups in 204 countries and territories as well as 660 subnational units in 20 countries and territories, for the years 1950-2023. For the first time, we used complete birth history data for ages 5-14 years, age-specific sibling history data for ages 15-49 years, and age-specific mortality data from Health and Demographic Surveillance Systems. We developed a single statistical model that incorporates both parametric and non-parametric methods, referred to as OneMod, to produce estimates of all-cause mortality for each age-sex-location group. OneMod includes two main steps: a detailed regression analysis with a generalised linear modelling tool that accounts for age-specific covariate effects such as the Socio-demographic Index (SDI) and a population attributable fraction (PAF) for all risk factors combined; and a non-parametric analysis of residuals using a multivariate kernel regression model that smooths across age and time to adaptably follow trends in the data without overfitting. We calibrated asymptotic uncertainty estimates using Pearson residuals to produce 95% uncertainty intervals (UIs) and corresponding 1000 draws. Life expectancy was calculated from age-specific mortality rates with standard demographic methods. For each measure, 95% UIs were calculated with the 25th and 975th ordered values from a 1000-draw posterior distribution. In 2023, 60·1 million (95% UI 59·0-61·1) deaths occurred globally, of which 4·67 million (4·59-4·75) were in children younger than 5 years. Due to considerable population growth and ageing since 1950, the number of annual deaths globally increased by 35·2% (32·2-38·4) over the 1950-2023 study period, during which the global age-standardised all-cause mortality rate declined by 66·6% (65·8-67·3). Trends in age-specific mortality rates between 2011 and 2023 varied by age group and location, with the largest decline in under-5 mortality occurring in east Asia (67·7% decrease); the largest increases in mortality for those aged 5-14 years, 25-29 years, and 30-39 years occurring in high-income North America (11·5%, 31·7%, and 49·9%, respectively); and the largest increases in mortality for those aged 15-19 years and 20-24 years occurring in Eastern Europe (53·9% and 40·1%, respectively). We also identified higher than previously estimated mortality rates in sub-Saharan Africa for all sexes combined aged 5-14 years (87·3% higher in GBD 2023 than GBD 2021 on average across countries and territories over the 1950-2021 period) and for females aged 15-29 years (61·2% higher), as well as lower than previously estimated mortality rates in sub-Saharan Africa for all sexes combined aged 50 years and older (13·2% lower), reflecting advances in our modelling approach. Global life expectancy followed three distinct trends over the study period. First, between 1950 and 2019, there were considerable improvements, from 51·2 (50·6-51·7) years for females and 47·9 (47·4-48·4) years for males in 1950 to 76·3 (76·2-76·4) years for females and 71·4 (71·3-71·5) years for males in 2019. Second, this period was followed by a decrease in life expectancy during the COVID-19 pandemic, to 74·7 (74·6-74·8) years for females and 69·3 (69·2-69·4) years for males in 2021. Finally, the world experienced a period of post-pandemic recovery in 2022 and 2023, wherein life expectancy generally returned to pre-pandemic (2019) levels in 2023 (76·3 [76·0-76·6] years for females and 71·5 [71·2-71·8] years for males). 194 (95·1%) of 204 countries and territories experienced at least partial post-pandemic recovery in age-standardised mortality rates by 2023, with 61·8% (126 of 204) recovering to or falling below pre-pandemic levels. There were several mortality trajectories during and following the pandemic across countries and territories. Long-term mortality trends also varied considerably between age groups and locations, demonstrating the diverse landscape of health outcomes globally. This analysis identified several key differences in mortality trends from previous estimates, including higher rates of adolescent mortality, higher rates of young adult mortality in females, and lower rates of mortality in older age groups in much of sub-Saharan Africa. The findings also highlight stark differences across countries and territories in the timing and scale of changes in all-cause mortality trends during and following the COVID-19 pandemic (2020-23). Our estimates of evolving trends in mortality and life expectancy across locations, ages, sexes, and SDI levels in recent years as well as over the entire 1950-2023 study period provide crucial information for governments, policy makers, and the public to ensure that health-care systems, economies, and societies are prepared to address the world's health needs, particularly in populations with higher rates of mortality than previously known. The estimates from this study provide a robust framework for GBD and a valuable foundation for policy development, implementation, and evaluation around the world. Gates Foundation.",
+            "doi": "10.1016/S0140-6736(25)01330-3",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/41092927/",
+            "relevanceScore": 6.1
+          },
+          {
+            "id": "W4200584507",
+            "source": "openalex",
+            "title": "Cancer Incidence, Mortality, Years of Life Lost, Years Lived With Disability, and Disability-Adjusted Life Years for 29 Cancer Groups From 2010 to 2019",
+            "authors": [
+              "Jonathan Kocarnik",
+              "Kelly Compton",
+              "Frances Dean",
+              "Weijia Fu",
+              "Brian Gaw"
+            ],
+            "journal": "JAMA Oncology",
+            "year": 2021,
+            "abstract": "The results of this systematic analysis suggest that the global burden of cancer is substantial and growing, with burden differing by SDI. These results provide comprehensive and comparable estimates that can potentially inform efforts toward equitable cancer control around the world.",
+            "doi": "https://doi.org/10.1001/jamaoncol.2021.6987",
+            "url": "https://doi.org/10.1001/jamaoncol.2021.6987",
+            "relevanceScore": 5.55
+          },
+          {
+            "id": "W4393858312",
+            "source": "openalex",
+            "title": "Global burden of 288 causes of death and life expectancy decomposition in 204 countries and territories and 811 subnational locations, 1990–2021: a systematic analysis for the Global Burden of Disease Study 2021",
+            "authors": [
+              "Mohsen Naghavi",
+              "Kanyin Liane Ong",
+              "Amirali Aali",
+              "Hazim Ababneh",
+              "Yohannes Habtegiorgis Abate"
+            ],
+            "journal": "The Lancet",
+            "year": 2024,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s0140-6736(24)00367-2",
+            "url": "https://doi.org/10.1016/s0140-6736(24)00367-2",
+            "relevanceScore": 4.25
+          }
+        ],
+        "trials": [],
+        "followUps": [
+          "What are the latest guideline-backed therapies for lung cancer?",
+          "Are there recruiting trials for lung cancer in Mumbai, India?",
+          "What side effects or interactions should patients discuss with a doctor?"
+        ],
+        "createdAt": "2026-04-15T16:14:51.362Z"
+      }
+    ],
+    "createdAt": "2026-04-15T16:14:36.956Z",
+    "updatedAt": "2026-04-15T16:14:51.362Z"
+  },
+  {
+    "sessionId": "ses_b06623366c5b44ba",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:02.200Z",
+    "updatedAt": "2026-04-15T16:19:02.200Z"
+  },
+  {
+    "sessionId": "ses_f04c7fa7c5604400",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:04.876Z",
+    "updatedAt": "2026-04-15T16:19:04.876Z"
+  },
+  {
+    "sessionId": "ses_a73c102a28b04ee1",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:05.807Z",
+    "updatedAt": "2026-04-15T16:19:05.807Z"
+  },
+  {
+    "sessionId": "ses_a1ba5d95fa824fa1",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:06.316Z",
+    "updatedAt": "2026-04-15T16:19:06.316Z"
+  },
+  {
+    "sessionId": "ses_8861ecfad2c14f57",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:06.465Z",
+    "updatedAt": "2026-04-15T16:19:06.465Z"
+  },
+  {
+    "sessionId": "ses_ec0fd66e7c7a403b",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:06.609Z",
+    "updatedAt": "2026-04-15T16:19:06.609Z"
+  },
+  {
+    "sessionId": "ses_f911288bd8904b42",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [],
+    "createdAt": "2026-04-15T16:19:06.758Z",
+    "updatedAt": "2026-04-15T16:19:06.758Z"
+  },
+  {
+    "sessionId": "ses_3b15a55d9fd549ab",
+    "disease": "stage 3 lung cancer",
+    "location": "Mumbai, India",
+    "comorbidities": [],
+    "messages": [
+      {
+        "id": "msg_9fd7c65900244d30",
+        "role": "user",
+        "content": "Ongoing type 1 diabetes trials in the US",
+        "createdAt": "2026-04-15T16:19:12.536Z"
+      },
+      {
+        "id": "msg_9d6ac31193ed47fa",
+        "role": "assistant",
+        "content": "Here is an evidence-backed summary for educational use only:\n\nTop relevant publications:\n- The global burden of cancer attributable to risk factors, 2010–19: a systematic analysis for the Global Burden of Disease Study 2019 [W4293276539] Bill & Melinda Gates Foundation.\n- Global, regional, and national burden of stroke and its risk factors, 1990–2019: a systematic analysis for the Global Burden of Disease Study 2019 [W3197233575] Bill & Melinda Gates Foundation.\n- A Comprehensive Review of the COVID-19 Pandemic and the Role of IoT, Drones, AI, Blockchain, and 5G in Managing its Impact [W3023617420] The unprecedented outbreak of the 2019 novel coronavirus, termed as COVID-19 by the World Health Organization (WHO), has placed numerous governments around the world in a precariou\n- Global, regional, and national age-sex-specific mortality for 282 causes of death in 195 countries and territories, 1980–2017: a systematic analysis for the Global Burden of Disease Study 2017 [W2899736836] Bill & Melinda Gates Foundation.\n\n\nPlease discuss any treatment or supplement decisions with a qualified clinician.",
+        "citations": [
+          {
+            "id": "W4293276539",
+            "source": "openalex",
+            "title": "The global burden of cancer attributable to risk factors, 2010–19: a systematic analysis for the Global Burden of Disease Study 2019",
+            "authors": [
+              "Khanh Bao Tran",
+              "Justin J. Lang",
+              "Kelly Compton",
+              "Rixing Xu",
+              "Alistair Acheson"
+            ],
+            "journal": "The Lancet",
+            "year": 2022,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s0140-6736(22)01438-6",
+            "url": "https://doi.org/10.1016/s0140-6736(22)01438-6",
+            "relevanceScore": 5.65
+          },
+          {
+            "id": "W3197233575",
+            "source": "openalex",
+            "title": "Global, regional, and national burden of stroke and its risk factors, 1990–2019: a systematic analysis for the Global Burden of Disease Study 2019",
+            "authors": [
+              "Valery L. Feigin",
+              "Benjamin Stark",
+              "Catherine O. Johnson",
+              "Gregory A. Roth",
+              "Catherine Bisignano"
+            ],
+            "journal": "The Lancet Neurology",
+            "year": 2021,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s1474-4422(21)00252-0",
+            "url": "https://doi.org/10.1016/s1474-4422(21)00252-0",
+            "relevanceScore": 3.95
+          },
+          {
+            "id": "W3023617420",
+            "source": "openalex",
+            "title": "A Comprehensive Review of the COVID-19 Pandemic and the Role of IoT, Drones, AI, Blockchain, and 5G in Managing its Impact",
+            "authors": [
+              "Vinay Chamola",
+              "Vikas Hassija",
+              "Vatsal Gupta",
+              "Mohsen Guizani"
+            ],
+            "journal": "IEEE Access",
+            "year": 2020,
+            "abstract": "The unprecedented outbreak of the 2019 novel coronavirus, termed as COVID-19 by the World Health Organization (WHO), has placed numerous governments around the world in a precarious position. The impact of the COVID-19 outbreak, earlier witnessed by the citizens of China alone, has now become a matter of grave concern for virtually every country in the world. The scarcity of resources to endure the COVID-19 outbreak combined with the fear of overburdened healthcare systems has forced a majority of these countries into a state of partial or complete lockdown. The number of laboratory-confirmed coronavirus cases has been increasing at an alarming rate throughout the world, with reportedly more than 3 million confirmed cases as of 30 April 2020. Adding to these woes, numerous false reports, misinformation, and unsolicited fears in regards to coronavirus, are being circulated regularly since the outbreak of the COVID-19. In response to such acts, we draw on various reliable sources to present a detailed review of all the major aspects associated with the COVID-19 pandemic. In addition to the direct health implications associated with the outbreak of COVID-19, this study highlights its impact on the global economy. In drawing things to a close, we explore the use of technologies such as the Internet of Things (IoT), Unmanned Aerial Vehicles (UAVs), blockchain, Artificial Intelligence (AI), and 5G, among others, to help mitigate the impact of COVID-19 outbreak.",
+            "doi": "https://doi.org/10.1109/access.2020.2992341",
+            "url": "https://doi.org/10.1109/access.2020.2992341",
+            "relevanceScore": 3.85
+          },
+          {
+            "id": "W2899736836",
+            "source": "openalex",
+            "title": "Global, regional, and national age-sex-specific mortality for 282 causes of death in 195 countries and territories, 1980–2017: a systematic analysis for the Global Burden of Disease Study 2017",
+            "authors": [
+              "Gregory A. Roth",
+              "Degu Abate",
+              "Kalkidan Hassen Abate",
+              "Solomón Mequanente Abay",
+              "Cristiana Abbafati"
+            ],
+            "journal": "The Lancet",
+            "year": 2018,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s0140-6736(18)32203-7",
+            "url": "https://doi.org/10.1016/s0140-6736(18)32203-7",
+            "relevanceScore": 3.65
+          },
+          {
+            "id": "W2912654919",
+            "source": "openalex",
+            "title": "Global, regional, and national incidence, prevalence, and years lived with disability for 354 diseases and injuries for 195 countries and territories, 1990–2017: a systematic analysis for the Global Burden of Disease Study 2017",
+            "authors": [
+              "Spencer L James",
+              "Degu Abate",
+              "Kalkidan Hassen Abate",
+              "Solomón Mequanente Abay",
+              "Cristiana Abbafati"
+            ],
+            "journal": "The Lancet",
+            "year": 2018,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s0140-6736(18)32279-7",
+            "url": "https://doi.org/10.1016/s0140-6736(18)32279-7",
+            "relevanceScore": 3.65
+          }
+        ],
+        "trials": [],
+        "followUps": [
+          "What are the latest guideline-backed therapies for stage 3 lung cancer?",
+          "Are there recruiting trials for stage 3 lung cancer in Mumbai, India?",
+          "What side effects or interactions should patients discuss with a doctor?"
+        ],
+        "createdAt": "2026-04-15T16:19:24.152Z"
+      },
+      {
+        "id": "msg_d7e7dc6fbfbd4a7f",
+        "role": "user",
+        "content": "What side effects or interactions should patients discuss with a doctor?",
+        "createdAt": "2026-04-15T16:19:33.371Z"
+      },
+      {
+        "id": "msg_3433ce7be24e442d",
+        "role": "assistant",
+        "content": "Here is an evidence-backed summary for educational use only:\n\nTop relevant publications:\n- A Comprehensive Review of the COVID-19 Pandemic and the Role of IoT, Drones, AI, Blockchain, and 5G in Managing its Impact [W3023617420] The unprecedented outbreak of the 2019 novel coronavirus, termed as COVID-19 by the World Health Organization (WHO), has placed numerous governments around the world in a precariou\n- COVID-19 and gynecological cancer: a review of the published guidelines. [PMID:32576608] On March 11, 2020 the COVID-19 outbreak was declared a 'pandemic' by the World Health Organization. COVID-19 is associated with higher surgical morbidity and mortality. An array of\n- Consensus to Reduce Withdrawal and Improve Adherence with SGLT2i: Consensus TWO SGLT2i Adherence Group. [PMID:40200617] Sodium-glucose co-transporter-2 inhibitors (SGLT2i) are a class of medications that have shown significant efficacy in regulating blood glucose levels and providing additional bene\n- Acid peptic disorder compass: An Indian expert consensus on comprehensive management. [PMID:41809210] Overlapping pathophysiological mechanisms of gastroesophageal reflux disease, peptic ulcer disease, and functional dyspepsia often limit the symptom-based diagnosis precision. Addi\n\n\nPlease discuss any treatment or supplement decisions with a qualified clinician.",
+        "citations": [
+          {
+            "id": "W3023617420",
+            "source": "openalex",
+            "title": "A Comprehensive Review of the COVID-19 Pandemic and the Role of IoT, Drones, AI, Blockchain, and 5G in Managing its Impact",
+            "authors": [
+              "Vinay Chamola",
+              "Vikas Hassija",
+              "Vatsal Gupta",
+              "Mohsen Guizani"
+            ],
+            "journal": "IEEE Access",
+            "year": 2020,
+            "abstract": "The unprecedented outbreak of the 2019 novel coronavirus, termed as COVID-19 by the World Health Organization (WHO), has placed numerous governments around the world in a precarious position. The impact of the COVID-19 outbreak, earlier witnessed by the citizens of China alone, has now become a matter of grave concern for virtually every country in the world. The scarcity of resources to endure the COVID-19 outbreak combined with the fear of overburdened healthcare systems has forced a majority of these countries into a state of partial or complete lockdown. The number of laboratory-confirmed coronavirus cases has been increasing at an alarming rate throughout the world, with reportedly more than 3 million confirmed cases as of 30 April 2020. Adding to these woes, numerous false reports, misinformation, and unsolicited fears in regards to coronavirus, are being circulated regularly since the outbreak of the COVID-19. In response to such acts, we draw on various reliable sources to present a detailed review of all the major aspects associated with the COVID-19 pandemic. In addition to the direct health implications associated with the outbreak of COVID-19, this study highlights its impact on the global economy. In drawing things to a close, we explore the use of technologies such as the Internet of Things (IoT), Unmanned Aerial Vehicles (UAVs), blockchain, Artificial Intelligence (AI), and 5G, among others, to help mitigate the impact of COVID-19 outbreak.",
+            "doi": "https://doi.org/10.1109/access.2020.2992341",
+            "url": "https://doi.org/10.1109/access.2020.2992341",
+            "relevanceScore": 83.85
+          },
+          {
+            "id": "PMID:32576608",
+            "source": "pubmed",
+            "title": "COVID-19 and gynecological cancer: a review of the published guidelines.",
+            "authors": [
+              "Christina Uwins",
+              "Geetu Prakash Bhandoria",
+              "T S Shylasree",
+              "Simon Butler-Manuel",
+              "Patricia Ellis"
+            ],
+            "journal": "International journal of gynecological cancer : official journal of the International Gynecological Cancer Society",
+            "year": 2020,
+            "abstract": "On March 11, 2020 the COVID-19 outbreak was declared a 'pandemic' by the World Health Organization. COVID-19 is associated with higher surgical morbidity and mortality. An array of guidelines on the management of cancer during this pandemic have been published since the first reports of the outbreak. This narrative review brings all the relevant information from the guidelines together into one document, to support patient care. We present a detailed review of published guidelines, statements, comments from peer-reviewed journals, and nationally/internationally recognized professional bodies and societies' web pages (in English or with English translation available) between December 1, 2019 and May 27, 2020. Search terms included combinations of COVID, SARS-COV-2, guideline, gynecology, oncology, gynecological, cancer. Recommendations for surgical and oncological prioritization of gynecological cancers are discussed and summarized. The role of minimally invasive surgery, patient perspectives, medico-legal aspects, and clinical trials during the pandemic are also discussed. The consensus is that elective benign surgery should cease and cancer surgery, chemotherapy, and radiotherapy should continue based on prioritization. Patient and staff face-to-face interactions should be limited, and health resources used efficiently using prioritization strategies. This review and the guidelines on which it is based support the difficult decisions currently facing us in gynecological cancer. It is a balancing act: limited resources and a hostile environment pitted against the time-sensitive nature of cancer treatment. We can only hope to do our best for our patients with the resources available to us.",
+            "doi": "10.1136/ijgc-2020-001634",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/32576608/",
+            "relevanceScore": 71.2
+          },
+          {
+            "id": "PMID:40200617",
+            "source": "pubmed",
+            "title": "Consensus to Reduce Withdrawal and Improve Adherence with SGLT2i: Consensus TWO SGLT2i Adherence Group.",
+            "authors": [
+              "Nagendra K Singh",
+              "Akash Kumar Singh",
+              "Bijay Patni",
+              "Prabhat Agarwal",
+              "Manohar Kathige Nageshappa"
+            ],
+            "journal": "The Journal of the Association of Physicians of India",
+            "year": 2025,
+            "abstract": "Sodium-glucose co-transporter-2 inhibitors (SGLT2i) are a class of medications that have shown significant efficacy in regulating blood glucose levels and providing additional benefits, such as cardiorenal protection. This study aims to analyze the factors leading to nonadherence and discontinuation of SGLT2i treatment and to identify strategies that can enhance patient compliance and reduce withdrawal rates. This consensus involved an expert committee comprising 14 leading opinion leaders, chosen for their profound expertise and experience in type 2 diabetes mellitus (T2D) and SGLT2i therapy. Prior to the meeting, a comprehensive document-developed through an extensive literature review on current challenges, best practices, and potential strategies for improving adherence and reducing withdrawal of SGLT2i-was distributed to the committee members. This allowed ample time for thorough review and preparation. The expert committee convened virtually multiple times to engage in in-depth discussions on various aspects of SGLT2i adherence and compliance. The finalized manuscript encapsulates the consensus achieved by the experts, presenting actionable recommendations aimed at enhancing adherence and reducing withdrawal rates in SGLT2i therapy. Based on the literature, several factors contribute to the nonadherence of SGLT2i, including being of Black race, older age (>65 years), high unemployment rate, lower income levels, extended duration of diabetes, a greater number of baseline comorbidities, genital infections, and limited access to healthcare facilities. To maintain good adherence, appropriate patient selection and education are essential. Healthcare practitioners should be well-informed about the drug's indications, interactions, and side effects. Regular monitoring, lifestyle adjustments, and open communication between healthcare practitioners and patients are crucial. Developing personalized care plans, educating patients, promptly addressing their concerns, and cultivating a collaborative healthcare relationship are critical in maintaining adherence.",
+            "doi": "10.59556/japi.73.0887",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/40200617/",
+            "relevanceScore": 60.5
+          },
+          {
+            "id": "PMID:41809210",
+            "source": "pubmed",
+            "title": "Acid peptic disorder compass: An Indian expert consensus on comprehensive management.",
+            "authors": [
+              "Saroj Kant Sinha",
+              "Rakesh Kochhar",
+              "Ks Somasekhar Rao",
+              "Dawesh Yadav",
+              "Sujay Ray"
+            ],
+            "journal": "World journal of gastrointestinal pharmacology and therapeutics",
+            "year": 2026,
+            "abstract": "Overlapping pathophysiological mechanisms of gastroesophageal reflux disease, peptic ulcer disease, and functional dyspepsia often limit the symptom-based diagnosis precision. Additionally, the easy availability of over-the-counter proton pump inhibitors has increased the instances of self-diagnosis and self-treatment in the Indian population. Prolonged, unsupervised use of acid suppressants may reduce the treatment efficacy and increase the risk of adverse effects, such as infections and nutrient deficiencies. Therefore, a task force of 13 leading gastroenterologists under the Society for Clinical Gastroenterology reviewed the existing evidence to develop expert consensus statements for differentiating the overlapping symptoms of acid peptic disorders (APD) and guiding the rational use of acid-suppressive therapies. The available literature was searched and summarized in order to identify the relevant data. The pieces of evidence were discussed, validated, and revised in a face-to-face interaction of the task force members that led to a final set of 20 consensus statements. A comprehensive algorithm of the APD 360° compass was prepared for diagnosis and effective management of APDs based on the recommendations. This algorithm may guide physicians in India for timely diagnosis and appropriate medical interventions, thereby improving the patients' quality of life.",
+            "doi": "10.4292/wjgpt.v17.i1.112615",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/41809210/",
+            "relevanceScore": 55.8
+          },
+          {
+            "id": "PMID:29440815",
+            "source": "pubmed",
+            "title": "Aspiring Pain Practitioners in India: Assessing Challenges and Building Opportunities.",
+            "authors": [
+              "Sushma Bhatnagar",
+              "Anuradha Patel",
+              "Srinivasa N Raja"
+            ],
+            "journal": "Indian journal of palliative care",
+            "year": 2018,
+            "abstract": "Pain medicine is a developing specialty, aimed at relieving pain and suffering, enhancing function, and improving the quality of life of patients. Pain is often ignored, under-reported and mismanaged by health-care providers. Aspiring pain physicians in India face many challenges and barriers in advancing their specialty. The objective of this study is to determine the challenges in establishing a pain practice in India and to discuss the opportunities and strategies to overcome these barriers. Face-to-face interactive sessions were held with 60 aspiring pain physicians of India who were chosen as registrants to an International Association for the Study of Pain-Indian Society for Study of Pain multidisciplinary evidence-based pain management program conducted at Delhi and Mumbai. The available opportunities, practical issues and the hurdles in becoming a pain specialist were analyzed and summarized in this commentary. The major barriers identified were: (1) Inadequate knowledge and absence of structured, educational and training courses, (2) bureaucratic hurdles, and (3) concerns of opioid misuse and addiction. The opportunities for personal growth and that of the specialty that could be utilized include the creation of a pain resource team, increasing community awareness, changing attitudes of other physicians toward pain specialty, and research and evidence building of the effectiveness of pain management strategies. India needs a structured teaching and training program in the area of pain medicine that is affiliated by the Medical Council of India or other reputed boards of medical education and certification. There is an urgent need to include pain management in the undergraduate and postgraduate medical curriculum. Enhancing community level awareness by public health education campaigns, developing networks of pain physicians, and appropriate marketing of the specialty is needed to make pain medicine recognized and utilized as a valuable specialty.",
+            "doi": "10.4103/IJPC.IJPC_148_17",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/29440815/",
+            "relevanceScore": 51.8
+          },
+          {
+            "id": "W2899736836",
+            "source": "openalex",
+            "title": "Global, regional, and national age-sex-specific mortality for 282 causes of death in 195 countries and territories, 1980–2017: a systematic analysis for the Global Burden of Disease Study 2017",
+            "authors": [
+              "Gregory A. Roth",
+              "Degu Abate",
+              "Kalkidan Hassen Abate",
+              "Solomón Mequanente Abay",
+              "Cristiana Abbafati"
+            ],
+            "journal": "The Lancet",
+            "year": 2018,
+            "abstract": "Bill & Melinda Gates Foundation.",
+            "doi": "https://doi.org/10.1016/s0140-6736(18)32203-7",
+            "url": "https://doi.org/10.1016/s0140-6736(18)32203-7",
+            "relevanceScore": 51.65
+          }
+        ],
+        "trials": [],
+        "followUps": [
+          "What are the latest guideline-backed therapies for stage 3 lung cancer?",
+          "Are there recruiting trials for stage 3 lung cancer in Mumbai, India?",
+          "What side effects or interactions should patients discuss with a doctor?"
+        ],
+        "createdAt": "2026-04-15T16:19:55.588Z"
+      }
+    ],
+    "createdAt": "2026-04-15T16:19:06.973Z",
+    "updatedAt": "2026-04-15T16:19:55.588Z"
+  }
+]

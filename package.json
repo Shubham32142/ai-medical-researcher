@@ -1,0 +1,19 @@
+{
+  "name": "curalink",
+  "private": true,
+  "packageManager": "bun@1.3.11",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "cd apps/web && bun run dev",
+    "dev:api": "cd apps/api && bun run dev",
+    "dev": "concurrently \"bun run dev:api\" \"bun run dev:web\"",
+    "build": "cd packages/types && bun run build && cd ../../apps/api && bun run build && cd ../web && bun run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.6.3"
+  }
+}

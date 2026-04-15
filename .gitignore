@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+.venv/
+.env
+.env.local
+__pycache__/
+.pytest_cache/
+.pyright/
+*.pyc
+.DS_Store
+coverage/
+chroma/
