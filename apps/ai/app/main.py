@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import time
 from collections import Counter
 from typing import Any
@@ -48,6 +49,17 @@ TREATMENT_TERMS = {
     "trial",
     "trials",
 }
+NUTRITION_TERMS = {
+    "diet",
+    "food",
+    "foods",
+    "fruit",
+    "fruits",
+    "nutrition",
+    "meal",
+    "glycemic",
+    "fiber",
+}
 GENERIC_PENALTY_TERMS = {
     "global burden",
     "incidence",
@@ -55,6 +67,42 @@ GENERIC_PENALTY_TERMS = {
     "years of life lost",
     "disability-adjusted",
     "epidemiology",
+    "prevalence estimates",
+    "diabetes atlas",
+    "international diabetes federation",
+}
+COMMON_CONDITIONS = {
+    "diabetes",
+    "cancer",
+    "asthma",
+    "arthritis",
+    "hypertension",
+    "obesity",
+    "depression",
+    "anxiety",
+    "migraine",
+    "thyroid",
+    "eczema",
+    "psoriasis",
+    "covid",
+    "copd",
+    "stroke",
+    "kidney",
+    "liver",
+    "heart",
+    "lung",
+    "breast",
+}
+FOLLOWUP_CUES = {
+    "what about",
+    "how about",
+    "tell me more",
+    "what else",
+    "side effects",
+    "risks",
+    "survival",
+    "prognosis",
+    "cost",
 }
 
 
@@ -90,6 +138,11 @@ def has_treatment_intent(text: str) -> bool:
     return any(term in lowered for term in TREATMENT_TERMS)
 
 
+def has_nutrition_intent(text: str) -> bool:
+    lowered = text.lower()
+    return any(term in lowered for term in NUTRITION_TERMS)
+
+
 def is_prescription_request(text: str) -> bool:
     lowered = text.lower()
     markers = [
@@ -105,18 +158,104 @@ def is_prescription_request(text: str) -> bool:
     return any(marker in lowered for marker in markers)
 
 
+def extract_condition_phrase(text: str) -> str | None:
+    lowered = re.sub(r"[^a-z0-9\s]", " ", text.lower())
+    patterns = [
+        r"\b(type\s*[12]\s+diabetes|gestational diabetes|prediabetes|diabetes)\b",
+        r"\b([a-z]+\s+){0,2}cancer\b",
+        r"\b(rheumatoid arthritis|arthritis|asthma|hypertension|depression|anxiety|migraine|eczema|psoriasis|thyroid disease|copd|covid)\b",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, lowered)
+        if match:
+            return match.group(0).strip()
+    return None
+
+
+def has_condition_signal(text: str) -> bool:
+    tokens = extract_keywords(text)
+    medical_suffixes = ("itis", "osis", "emia", "oma", "pathy", "plasia", "penia")
+    return bool(extract_condition_phrase(text)) or any(token in COMMON_CONDITIONS or token.endswith(medical_suffixes) for token in tokens)
+
+
+def is_vague_followup(text: str) -> bool:
+    lowered = text.lower().strip()
+    if any(cue in lowered for cue in FOLLOWUP_CUES):
+        return True
+    tokens = extract_keywords(text)
+    return len(tokens) <= 2 and not has_condition_signal(text)
+
+
+def resolve_focus_topic(disease: str, message: str) -> str:
+    disease_terms = set(extract_keywords(disease))
+    message_terms = set(extract_keywords(message))
+    condition_phrase = extract_condition_phrase(message)
+
+    if disease_terms & message_terms:
+        return disease
+    if is_vague_followup(message):
+        return disease
+    if condition_phrase:
+        return condition_phrase
+    if has_condition_signal(message):
+        return message
+    return disease
+
+
+def summarize_snippet(text: str, limit: int = 180) -> str:
+    cleaned = " ".join(text.split()).strip()
+    if not cleaned:
+        return "No abstract summary was available."
+
+    sentences = re.split(r"(?<=[.!?])\s+", cleaned)
+    if sentences and len(sentences[0]) <= limit:
+        return sentences[0]
+
+    trimmed = cleaned[:limit].rstrip()
+    if " " in trimmed:
+        trimmed = trimmed.rsplit(" ", 1)[0]
+    return trimmed + "…"
+
+
+def evidence_is_specific_enough(publications: list[dict[str, Any]], disease: str, message: str) -> bool:
+    if not publications:
+        return False
+
+    if has_nutrition_intent(message):
+        disease_terms = set(extract_keywords(disease))
+        message_terms = set(extract_keywords(message))
+        extra_terms = {term for term in message_terms if term not in disease_terms}
+        intent_terms = extra_terms or NUTRITION_TERMS
+
+        for item in publications[:3]:
+            lowered_text = f"{item.get('title', '')} {item.get('abstract', '')}".lower()
+            if any(term in lowered_text for term in intent_terms) and any(term in lowered_text for term in NUTRITION_TERMS):
+                return True
+        return False
+
+    return True
+
+
 def build_query_variants(disease: str, message: str, location: str, history: str) -> list[str]:
     disease_phrase = f'"{disease}"' if " " in disease else disease
     message_terms = " ".join(extract_keywords(message)[:4])
     history_terms = " ".join(extract_keywords(history)[:3])
-    treatment_suffix = "treatment therapy" if has_treatment_intent(message) else "clinical evidence"
+    is_nutrition_query = any(term in message.lower() for term in {"diet", "food", "foods", "fruit", "fruits", "eat", "nutrition"})
 
-    candidates = [
-        f"{disease_phrase} {message_terms} {treatment_suffix}".strip(),
-        f"{disease_phrase} treatment therapy review".strip(),
-        f"{disease_phrase} immunotherapy chemotherapy clinical trial".strip(),
-        f"{disease_phrase} {history_terms}".strip(),
-    ]
+    if has_treatment_intent(message):
+        candidates = [
+            f"{disease_phrase} {message_terms} treatment therapy".strip(),
+            f"{disease_phrase} treatment therapy review".strip(),
+            f"{disease_phrase} immunotherapy chemotherapy clinical trial".strip(),
+            f"{disease_phrase} {history_terms}".strip(),
+        ]
+    else:
+        candidates = [
+            f"{disease_phrase} {message_terms} clinical evidence".strip(),
+            f"{disease_phrase} {message_terms} systematic review".strip(),
+            f"{disease_phrase} diet nutrition review".strip() if is_nutrition_query else f"{disease_phrase} clinical review".strip(),
+            f"{disease_phrase} {history_terms}".strip(),
+        ]
 
     seen: set[str] = set()
     variants: list[str] = []
@@ -160,7 +299,9 @@ def score_item(query: str, item: dict[str, Any], disease: str, message: str) -> 
     disease_bonus = (disease_hits * 1.8) + (disease_title_hits * 2.4)
 
     intent_hits = sum(1 for term in TREATMENT_TERMS if term in body_terms)
+    nutrition_hits = sum(1 for term in NUTRITION_TERMS if term in body_terms)
     intent_bonus = intent_hits * 1.2 if has_treatment_intent(message) else 0
+    nutrition_bonus = nutrition_hits * 1.1 if has_nutrition_intent(message) else 0
 
     recency = max(0, int(item.get("year", 2024)) - 2017) / 10
     source_bonus = 0.55 if item.get("source") == "pubmed" else 0.15
@@ -172,12 +313,13 @@ def score_item(query: str, item: dict[str, Any], disease: str, message: str) -> 
     if any(term in lowered_text for term in GENERIC_PENALTY_TERMS) and not any(term in lowered_text for term in TREATMENT_TERMS):
         generic_penalty = 3.0
 
-    return round((overlap * 1.2) + disease_bonus + intent_bonus + recency + source_bonus + trial_bonus + abstract_bonus - generic_penalty, 3)
+    return round((overlap * 1.2) + disease_bonus + intent_bonus + nutrition_bonus + recency + source_bonus + trial_bonus + abstract_bonus - generic_penalty, 3)
 
 
 def filter_publications(publications: list[dict[str, Any]], disease: str, message: str) -> list[dict[str, Any]]:
     disease_terms = extract_keywords(disease)
     require_treatment = has_treatment_intent(message)
+    require_nutrition = has_nutrition_intent(message)
     filtered: list[dict[str, Any]] = []
 
     for item in publications:
@@ -191,6 +333,9 @@ def filter_publications(publications: list[dict[str, Any]], disease: str, messag
 
         if require_treatment:
             if any(term in lowered_text for term in TREATMENT_TERMS) or "review" in lowered_text:
+                filtered.append(item)
+        elif require_nutrition:
+            if any(term in lowered_text for term in NUTRITION_TERMS) or "diet" in lowered_text or "nutrition" in lowered_text:
                 filtered.append(item)
         else:
             filtered.append(item)
@@ -280,9 +425,11 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
 
     if llm_text and any(identifier and identifier in llm_text for identifier in evidence_ids):
         prefix = "I can summarize the evidence, but I cannot recommend a dose or prescribe medication.\n\n" if prescription_like else ""
-        return prefix + llm_text.strip() + "\n\n**Please discuss treatment decisions with a qualified clinician.**"
+        return prefix + llm_text.strip() + "\n\n**Please discuss personal medical decisions with a qualified clinician.**"
 
     if not publications and not trials:
+        if has_nutrition_intent(query):
+            return "I could not confirm a food-specific answer from the live evidence right now. Please try a narrower question such as low-glycemic fruits for diabetes."
         return "I could not find enough live evidence right now. Please try a narrower disease name or a broader location."
 
     lines = ["### Quick answer", ""]
@@ -313,7 +460,7 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
     lines.extend(["", "### What the evidence suggests", ""])
 
     for item in publications[:3]:
-        snippet = item.get("abstract", "")[:150].strip()
+        snippet = summarize_snippet(item.get("abstract", ""))
         lines.append(f"- **{item['title']}** — {snippet}")
 
     if trials:
@@ -321,7 +468,7 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
         for trial in trials[:2]:
             lines.append(f"- **{trial['title']}** — status: {trial['status']}")
 
-    lines.extend(["", "**Please discuss treatment decisions with a qualified clinician.**"])
+    lines.extend(["", "**Please discuss personal medical decisions with a qualified clinician.**"])
     return "\n".join(lines)
 
 
@@ -348,8 +495,14 @@ async def research(payload: ResearchRequest) -> dict[str, Any]:
 @app.post("/v1/chat")
 async def chat(payload: ChatRequest) -> dict[str, Any]:
     latest_context = " ".join(turn.content for turn in payload.history[-4:])
-    query = f"{payload.disease} {payload.message} {payload.location} {latest_context}".strip()
-    publications, trials = await gather_research(query, payload.disease, payload.location, latest_context)
+    focus_topic = resolve_focus_topic(payload.disease, payload.message)
+    scoped_history = latest_context if focus_topic == payload.disease else ""
+    query = f"{focus_topic} {payload.message} {payload.location} {scoped_history}".strip()
+    publications, trials = await gather_research(query, focus_topic, payload.location, scoped_history)
+    if not evidence_is_specific_enough(publications, focus_topic, payload.message):
+        publications = []
+        trials = []
+
     answer = await synthesize(
         query,
         publications,
@@ -361,5 +514,5 @@ async def chat(payload: ChatRequest) -> dict[str, Any]:
         "answer": answer,
         "citations": publications[:6],
         "trials": trials[:4],
-        "followUps": build_followups(payload.disease, payload.location),
+        "followUps": build_followups(focus_topic, payload.location),
     }
