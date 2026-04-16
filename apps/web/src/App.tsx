@@ -46,29 +46,37 @@ export default function App() {
 
   const canStart = disease.trim().length > 1 && location.trim().length > 1;
 
-  async function createSession() {
-    if (!canStart) return;
+  async function createSession(nextDisease?: string, nextLocation?: string) {
+    const diseaseValue = (nextDisease ?? disease).trim();
+    const locationValue = (nextLocation ?? location).trim();
+    if (diseaseValue.length < 2 || locationValue.length < 2) return "";
+
     setLoading(true);
     setError("");
     try {
       const res = await fetch(`${apiBase}/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ disease, location }),
+        body: JSON.stringify({ disease: diseaseValue, location: locationValue }),
       });
       if (!res.ok) throw new Error("Could not create session");
       const data = await res.json();
       setSessionId(data.sessionId);
+      setMessages([]);
+      setExtrasById({});
+      return data.sessionId as string;
     } catch {
       setError("Session setup failed. Please ensure the API is running.");
+      return "";
     } finally {
       setLoading(false);
     }
   }
 
-  async function ask(promptText?: string) {
+  async function ask(promptText?: string, targetSessionId?: string) {
     const content = (promptText ?? question).trim();
-    if (!content || !sessionId || loading) return;
+    const activeSessionId = targetSessionId ?? sessionId;
+    if (!content || !activeSessionId || loading) return;
     setError("");
 
     const userMessage: Message = {
@@ -98,7 +106,7 @@ export default function App() {
       const response = await fetch(`${apiBase}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, message: content }),
+        body: JSON.stringify({ sessionId: activeSessionId, message: content }),
       });
 
       if (!response.ok) {
@@ -172,6 +180,25 @@ export default function App() {
     }
   }
 
+  async function handleFollowUp(item: string) {
+    const switchMatch = item.match(/^Switch focus to (.+)$/i);
+    const newSessionMatch = item.match(/^Start a new session for (.+)$/i);
+
+    if (switchMatch || newSessionMatch) {
+      const nextDisease = (switchMatch?.[1] || newSessionMatch?.[1] || "").trim();
+      if (!nextDisease) return;
+
+      setDisease(nextDisease);
+      const nextSessionId = await createSession(nextDisease, location);
+      if (switchMatch && nextSessionId) {
+        await ask(`What does the evidence say about diet and lifestyle for ${nextDisease}?`, nextSessionId);
+      }
+      return;
+    }
+
+    await ask(item);
+  }
+
   const welcome = useMemo(() => {
     if (!sessionId)
       return "Create a session to start evidence-backed medical research chat.";
@@ -209,13 +236,15 @@ export default function App() {
             </label>
             <button
               className="primary"
-              onClick={createSession}
+              onClick={() => {
+                void createSession();
+              }}
               disabled={!canStart || loading}
             >
-              {sessionId
-                ? "Session ready"
-                : loading
-                  ? "Starting..."
+              {loading
+                ? "Starting..."
+                : sessionId
+                  ? "Start new session"
                   : "Start session"}
             </button>
           </div>
@@ -329,7 +358,7 @@ export default function App() {
                           <button
                             key={item}
                             className="chip"
-                            onClick={() => ask(item)}
+                            onClick={() => handleFollowUp(item)}
                             disabled={loading}
                           >
                             {item}

@@ -202,6 +202,16 @@ def resolve_focus_topic(disease: str, message: str) -> str:
     return disease
 
 
+def is_explicit_topic_switch(session_disease: str, message: str, focus_topic: str) -> bool:
+    mentioned_condition = extract_condition_phrase(message)
+    if not mentioned_condition:
+        return False
+
+    session_terms = set(extract_keywords(session_disease))
+    focus_terms = set(extract_keywords(focus_topic))
+    return bool(focus_terms) and session_terms.isdisjoint(focus_terms)
+
+
 def summarize_snippet(text: str, limit: int = 180) -> str:
     cleaned = " ".join(text.split()).strip()
     if not cleaned:
@@ -224,12 +234,14 @@ def evidence_is_specific_enough(publications: list[dict[str, Any]], disease: str
     if has_nutrition_intent(message):
         disease_terms = set(extract_keywords(disease))
         message_terms = set(extract_keywords(message))
-        extra_terms = {term for term in message_terms if term not in disease_terms}
+        extra_terms = {
+            term for term in message_terms if term not in disease_terms and term not in {"this", "disease"}
+        }
         intent_terms = extra_terms or NUTRITION_TERMS
 
         for item in publications[:3]:
-            lowered_text = f"{item.get('title', '')} {item.get('abstract', '')}".lower()
-            if any(term in lowered_text for term in intent_terms) and any(term in lowered_text for term in NUTRITION_TERMS):
+            text_terms = set(tokenize(f"{item.get('title', '')} {item.get('abstract', '')}"))
+            if text_terms.intersection(intent_terms) and text_terms.intersection(NUTRITION_TERMS):
                 return True
         return False
 
@@ -331,11 +343,13 @@ def filter_publications(publications: list[dict[str, Any]], disease: str, messag
         if disease_hits == 0:
             continue
 
+        text_terms = set(tokenize(lowered_text))
+
         if require_treatment:
-            if any(term in lowered_text for term in TREATMENT_TERMS) or "review" in lowered_text:
+            if text_terms.intersection(TREATMENT_TERMS) or "review" in lowered_text:
                 filtered.append(item)
         elif require_nutrition:
-            if any(term in lowered_text for term in NUTRITION_TERMS) or "diet" in lowered_text or "nutrition" in lowered_text:
+            if text_terms.intersection(NUTRITION_TERMS):
                 filtered.append(item)
         else:
             filtered.append(item)
@@ -429,7 +443,7 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
 
     if not publications and not trials:
         if has_nutrition_intent(query):
-            return "I could not confirm a food-specific answer from the live evidence right now. Please try a narrower question such as low-glycemic fruits for diabetes."
+            return "I could not confirm a food-specific answer from the live evidence right now. Please try a more specific nutrition question or check with a clinician or dietitian."
         return "I could not find enough live evidence right now. Please try a narrower disease name or a broader location."
 
     lines = ["### Quick answer", ""]
@@ -438,22 +452,26 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
         lines.append("I cannot recommend a dose, but the evidence suggests this should be discussed with your treating doctor because interactions depend on your cancer therapy.")
     elif publications:
         summary_text = " ".join(f"{item.get('title', '')} {item.get('abstract', '')}" for item in publications[:4]).lower()
-        themes: list[str] = []
-        if "immunotherapy" in summary_text:
-            themes.append("immunotherapy")
-        if "targeted" in summary_text:
-            themes.append("targeted therapy")
-        if "chemotherapy" in summary_text:
-            themes.append("chemotherapy")
-        if "radiation" in summary_text or "radiotherapy" in summary_text:
-            themes.append("radiation therapy")
-        if "surgery" in summary_text:
-            themes.append("surgery")
 
-        if themes:
-            lines.append("Recent evidence points to options such as " + ", ".join(themes[:4]) + ", depending on disease stage and patient profile.")
+        if has_nutrition_intent(query):
+            lines.append("I found limited nutrition-related evidence and summarized the most relevant points below. If you want specific diet advice, it should be checked with a clinician or dietitian.")
         else:
-            lines.append("I found recent evidence related to your question and summarized the strongest takeaways below.")
+            themes: list[str] = []
+            if "immunotherapy" in summary_text:
+                themes.append("immunotherapy")
+            if "targeted" in summary_text:
+                themes.append("targeted therapy")
+            if "chemotherapy" in summary_text:
+                themes.append("chemotherapy")
+            if "radiation" in summary_text or "radiotherapy" in summary_text:
+                themes.append("radiation therapy")
+            if "surgery" in summary_text:
+                themes.append("surgery")
+
+            if themes:
+                lines.append("Recent evidence points to options such as " + ", ".join(themes[:4]) + ", depending on disease stage and patient profile.")
+            else:
+                lines.append("I found recent evidence related to your question and summarized the strongest takeaways below.")
     else:
         lines.append("I found some relevant evidence, but it is still limited and should be interpreted carefully.")
 
@@ -472,8 +490,14 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
     return "\n".join(lines)
 
 
-def build_followups(disease: str, location: str) -> list[str]:
+def build_followups(disease: str, location: str, query: str = "") -> list[str]:
     location_text = f" in {location}" if location else ""
+    if has_nutrition_intent(query):
+        return [
+            f"What nutrition evidence exists for {disease}?",
+            f"Are there supplement interactions to discuss for {disease}?",
+            f"What diet questions should patients ask a doctor about {disease}?",
+        ]
     return [
         f"What are the latest guideline-backed therapies for {disease}?",
         f"Are there recruiting trials for {disease}{location_text}?",
@@ -496,6 +520,24 @@ async def research(payload: ResearchRequest) -> dict[str, Any]:
 async def chat(payload: ChatRequest) -> dict[str, Any]:
     latest_context = " ".join(turn.content for turn in payload.history[-4:])
     focus_topic = resolve_focus_topic(payload.disease, payload.message)
+
+    if is_explicit_topic_switch(payload.disease, payload.message, focus_topic):
+        answer = (
+            "### Quick answer\n\n"
+            f"Your current session is focused on **{payload.disease}**, but your latest question looks like it is about **{focus_topic}**.\n\n"
+            "Please switch the Disease field or start a new session if you want evidence for that condition."
+        )
+        return {
+            "answer": answer,
+            "citations": [],
+            "trials": [],
+            "followUps": [
+                f"Switch focus to {focus_topic}",
+                f"Start a new session for {focus_topic}",
+                f"What nutrition evidence exists for {payload.disease}?",
+            ],
+        }
+
     scoped_history = latest_context if focus_topic == payload.disease else ""
     query = f"{focus_topic} {payload.message} {payload.location} {scoped_history}".strip()
     publications, trials = await gather_research(query, focus_topic, payload.location, scoped_history)
@@ -514,5 +556,5 @@ async def chat(payload: ChatRequest) -> dict[str, Any]:
         "answer": answer,
         "citations": publications[:6],
         "trials": trials[:4],
-        "followUps": build_followups(focus_topic, payload.location),
+        "followUps": build_followups(focus_topic, payload.location, payload.message),
     }
