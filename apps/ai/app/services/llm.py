@@ -61,8 +61,11 @@ def build_prompt(query: str, evidence: list[dict[str, Any]]) -> str:
     return (
         f"Question: {query}\n\n"
         "You are a medical research assistant. Use only the evidence below."
-        " Write a direct, user-friendly answer first, then a brief evidence summary."
-        " Do not print raw citation IDs inside the answer body. If evidence is weak or missing, say so clearly."
-        " Refuse dosage or prescription advice.\n\nEvidence:\n"
+        " Answer the user's specific intent first."
+        " If they ask about clinical trials, address trials first."
+        " If they ask about side effects or interactions, focus on adverse effects and cautions first."
+        " Write a direct, user-friendly answer followed by a brief evidence summary."
+        " Do not print raw citation IDs inside the answer body because the UI shows the evidence separately."
+        " If evidence is weak or missing, say so clearly. Refuse dosage or prescription advice.\n\nEvidence:\n"
         + "\n".join(snippets)
     )

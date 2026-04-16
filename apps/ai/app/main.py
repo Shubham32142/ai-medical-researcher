@@ -49,6 +49,30 @@ TREATMENT_TERMS = {
     "trial",
     "trials",
 }
+TRIAL_TERMS = {
+    "trial",
+    "trials",
+    "recruiting",
+    "recruitment",
+    "study",
+    "studies",
+    "eligibility",
+}
+SIDE_EFFECT_TERMS = {
+    "side effect",
+    "side effects",
+    "interaction",
+    "interactions",
+    "adverse",
+    "toxicity",
+    "toxicities",
+    "safety",
+    "risk",
+    "risks",
+    "harm",
+    "harms",
+    "pneumonitis",
+}
 NUTRITION_TERMS = {
     "diet",
     "food",
@@ -136,6 +160,16 @@ def extract_keywords(text: str) -> list[str]:
 def has_treatment_intent(text: str) -> bool:
     lowered = text.lower()
     return any(term in lowered for term in TREATMENT_TERMS)
+
+
+def is_trial_query(text: str) -> bool:
+    lowered = text.lower()
+    return any(term in lowered for term in TRIAL_TERMS)
+
+
+def is_side_effect_query(text: str) -> bool:
+    lowered = text.lower()
+    return any(term in lowered for term in SIDE_EFFECT_TERMS)
 
 
 def has_nutrition_intent(text: str) -> bool:
@@ -227,6 +261,30 @@ def summarize_snippet(text: str, limit: int = 180) -> str:
     return trimmed + "…"
 
 
+def llm_answer_looks_relevant(answer: str, query: str) -> bool:
+    cleaned = " ".join(answer.split()).strip()
+    if len(cleaned) < 80:
+        return False
+
+    answer_terms = set(tokenize(cleaned))
+    query_terms = set(extract_keywords(query))
+    if query_terms and answer_terms.intersection(query_terms):
+        return True
+
+    return any(
+        phrase in cleaned.lower()
+        for phrase in ["trial", "side effect", "interaction", "evidence", "treatment", "therapy", "doctor"]
+    )
+
+
+def sanitize_llm_text(answer: str) -> str:
+    cleaned = re.sub(r"\[(?:pmid:?\s*)?\d+\]", "", answer, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\[W\d+\]", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    return cleaned.strip()
+
+
 def evidence_is_specific_enough(publications: list[dict[str, Any]], disease: str, message: str) -> bool:
     if not publications:
         return False
@@ -254,7 +312,21 @@ def build_query_variants(disease: str, message: str, location: str, history: str
     history_terms = " ".join(extract_keywords(history)[:3])
     is_nutrition_query = any(term in message.lower() for term in {"diet", "food", "foods", "fruit", "fruits", "eat", "nutrition"})
 
-    if has_treatment_intent(message):
+    if is_trial_query(message):
+        candidates = [
+            f"{disease_phrase} recruiting clinical trials {location}".strip(),
+            f"{disease_phrase} interventional study recruiting".strip(),
+            f"{disease_phrase} clinical trial eligibility therapy".strip(),
+            f"{disease_phrase} {message_terms}".strip(),
+        ]
+    elif is_side_effect_query(message):
+        candidates = [
+            f"{disease_phrase} treatment adverse effects interactions review".strip(),
+            f"{disease_phrase} immunotherapy chemotherapy toxicity review".strip(),
+            f"{disease_phrase} targeted therapy adverse events".strip(),
+            f"{disease_phrase} {message_terms}".strip(),
+        ]
+    elif has_treatment_intent(message):
         candidates = [
             f"{disease_phrase} {message_terms} treatment therapy".strip(),
             f"{disease_phrase} treatment therapy review".strip(),
@@ -330,6 +402,8 @@ def score_item(query: str, item: dict[str, Any], disease: str, message: str) -> 
 
 def filter_publications(publications: list[dict[str, Any]], disease: str, message: str) -> list[dict[str, Any]]:
     disease_terms = extract_keywords(disease)
+    require_trial = is_trial_query(message)
+    require_side_effects = is_side_effect_query(message)
     require_treatment = has_treatment_intent(message)
     require_nutrition = has_nutrition_intent(message)
     filtered: list[dict[str, Any]] = []
@@ -344,8 +418,15 @@ def filter_publications(publications: list[dict[str, Any]], disease: str, messag
             continue
 
         text_terms = set(tokenize(lowered_text))
+        safety_terms = {"adverse", "toxicity", "toxicities", "interaction", "interactions", "safety", "pneumonitis", "complication", "complications"}
 
-        if require_treatment:
+        if require_trial:
+            if "trial" in lowered_text or "study" in lowered_text or text_terms.intersection({"recruiting", "interventional"}):
+                filtered.append(item)
+        elif require_side_effects:
+            if text_terms.intersection(safety_terms) or "side effect" in lowered_text:
+                filtered.append(item)
+        elif require_treatment:
             if text_terms.intersection(TREATMENT_TERMS) or "review" in lowered_text:
                 filtered.append(item)
         elif require_nutrition:
@@ -433,13 +514,23 @@ async def gather_research(query: str, disease: str, location: str, history: str 
     return payload["publications"], payload["trials"]
 
 
-async def synthesize(query: str, publications: list[dict[str, Any]], trials: list[dict[str, Any]], *, prescription_like: bool = False) -> str:
+async def synthesize(
+    query: str,
+    publications: list[dict[str, Any]],
+    trials: list[dict[str, Any]],
+    *,
+    question_text: str = "",
+    prescription_like: bool = False,
+) -> str:
+    question_focus = question_text or query
     llm_text = await generate_with_optional_llm(query, publications + trials)
-    evidence_ids = [item.get("id") for item in publications[:4]] + [item.get("nctId") for item in trials[:3]]
+    allow_llm_answer = not is_trial_query(question_focus) and not is_side_effect_query(question_focus)
 
-    if llm_text and any(identifier and identifier in llm_text for identifier in evidence_ids):
+    if allow_llm_answer and llm_text and llm_answer_looks_relevant(llm_text, question_focus):
+        cleaned_llm_text = sanitize_llm_text(llm_text)
         prefix = "I can summarize the evidence, but I cannot recommend a dose or prescribe medication.\n\n" if prescription_like else ""
-        return prefix + llm_text.strip() + "\n\n**Please discuss personal medical decisions with a qualified clinician.**"
+        suffix = "" if "qualified clinician" in cleaned_llm_text.lower() else "\n\n**Please discuss personal medical decisions with a qualified clinician.**"
+        return prefix + cleaned_llm_text + suffix
 
     if not publications and not trials:
         if has_nutrition_intent(query):
@@ -447,12 +538,33 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
         return "I could not find enough live evidence right now. Please try a narrower disease name or a broader location."
 
     lines = ["### Quick answer", ""]
+    summary_text = " ".join(f"{item.get('title', '')} {item.get('abstract', '')}" for item in publications[:4]).lower()
 
     if prescription_like:
         lines.append("I cannot recommend a dose, but the evidence suggests this should be discussed with your treating doctor because interactions depend on your cancer therapy.")
-    elif publications:
-        summary_text = " ".join(f"{item.get('title', '')} {item.get('abstract', '')}" for item in publications[:4]).lower()
+    elif is_trial_query(question_focus):
+        nearby_trials = sum(1 for trial in trials[:4] if trial.get("nearUser"))
+        if trials and nearby_trials:
+            lines.append(f"I found relevant clinical trials, including {nearby_trials} that appear closer to your location.")
+        elif trials:
+            lines.append("I found relevant clinical trials, but the live sources do not clearly confirm a close location match yet.")
+        else:
+            lines.append("I did not find a clear recruiting trial match from the live sources right now, but I summarized the closest relevant evidence below.")
+    elif is_side_effect_query(question_focus):
+        caution_points: list[str] = []
+        if "pneumonitis" in summary_text or "interstitial lung disease" in summary_text or "lung inflammation" in summary_text:
+            caution_points.append("breathing changes or lung inflammation")
+        if "immune" in summary_text or "immunotherapy" in summary_text:
+            caution_points.append("immune-related reactions")
+        if "toxicity" in summary_text or "drug-induced" in summary_text:
+            caution_points.append("treatment toxicity monitoring")
+        if "interaction" in summary_text or "interactions" in summary_text:
+            caution_points.append("medicine interactions")
 
+        if not caution_points:
+            caution_points = ["breathing changes", "fatigue", "rash or fever", "possible medicine interactions"]
+        lines.append("The strongest evidence suggests discussing " + ", ".join(caution_points[:4]) + " with the care team.")
+    elif publications:
         if has_nutrition_intent(query):
             lines.append("I found limited nutrition-related evidence and summarized the most relevant points below. If you want specific diet advice, it should be checked with a clinician or dietitian.")
         else:
@@ -549,6 +661,7 @@ async def chat(payload: ChatRequest) -> dict[str, Any]:
         query,
         publications,
         trials,
+        question_text=payload.message,
         prescription_like=is_prescription_request(payload.message),
     )
 
