@@ -19,8 +19,10 @@ function shortText(text: string, max = 160) {
 function cleanAssistantText(text: string) {
   return text
     .replace(/\[(W\d+|PMID:?\d+|NCT\d+)\]/g, "")
-    .replace(/\s{2,}/g, " ")
-    .replace(/\n\s+\n/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/([^\n])###/g, "$1\n\n###")
+    .replace(/([^\n])- \*\*/g, "$1\n- **")
     .trim();
 }
 
@@ -266,9 +268,11 @@ export default function App() {
                       {message.role === "user" ? "You" : "CuraLink"}
                     </div>
                     {message.role === "assistant" ? (
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {cleanAssistantText(message.content || "Thinking...")}
-                      </ReactMarkdown>
+                      <div className="markdown-body">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {cleanAssistantText(message.content || "Thinking...")}
+                        </ReactMarkdown>
+                      </div>
                     ) : (
                       <p>{message.content}</p>
                     )}

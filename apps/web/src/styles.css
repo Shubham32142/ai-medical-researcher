@@ -140,6 +140,32 @@ textarea {
 
 .bubble.assistant {
     align-self: stretch;
+    overflow-wrap: anywhere;
+}
+
+.markdown-body {
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.markdown-body h3 {
+    margin: 0.85rem 0 0.35rem;
+    color: #ffffff;
+}
+
+.markdown-body p {
+    margin: 0 0 0.8rem;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+    margin: 0.5rem 0 0.8rem;
+    padding-left: 1.3rem;
+}
+
+.markdown-body li {
+    margin-bottom: 0.5rem;
 }
 
 .bubble-head {

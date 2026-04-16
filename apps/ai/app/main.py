@@ -288,10 +288,25 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
     lines = ["### Quick answer", ""]
 
     if prescription_like:
-        lines.append("I cannot tell you what dose to take, but the current evidence suggests this should be discussed with your treating doctor because interactions depend on your cancer therapy.")
+        lines.append("I cannot recommend a dose, but the evidence suggests this should be discussed with your treating doctor because interactions depend on your cancer therapy.")
     elif publications:
-        top_titles = ", ".join(item["title"] for item in publications[:2])
-        lines.append(f"I found recent evidence related to your question. The strongest papers point toward themes such as {top_titles}.")
+        summary_text = " ".join(f"{item.get('title', '')} {item.get('abstract', '')}" for item in publications[:4]).lower()
+        themes: list[str] = []
+        if "immunotherapy" in summary_text:
+            themes.append("immunotherapy")
+        if "targeted" in summary_text:
+            themes.append("targeted therapy")
+        if "chemotherapy" in summary_text:
+            themes.append("chemotherapy")
+        if "radiation" in summary_text or "radiotherapy" in summary_text:
+            themes.append("radiation therapy")
+        if "surgery" in summary_text:
+            themes.append("surgery")
+
+        if themes:
+            lines.append("Recent evidence points to options such as " + ", ".join(themes[:4]) + ", depending on disease stage and patient profile.")
+        else:
+            lines.append("I found recent evidence related to your question and summarized the strongest takeaways below.")
     else:
         lines.append("I found some relevant evidence, but it is still limited and should be interpreted carefully.")
 
@@ -299,12 +314,12 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
 
     for item in publications[:3]:
         snippet = item.get("abstract", "")[:150].strip()
-        lines.append(f"- **{item['title']}** [{item['id']}] — {snippet}")
+        lines.append(f"- **{item['title']}** — {snippet}")
 
     if trials:
         lines.extend(["", "### Related trials", ""])
         for trial in trials[:2]:
-            lines.append(f"- **{trial['title']}** [{trial['nctId']}] — status: {trial['status']}")
+            lines.append(f"- **{trial['title']}** — status: {trial['status']}")
 
     lines.extend(["", "**Please discuss treatment decisions with a qualified clinician.**"])
     return "\n".join(lines)
