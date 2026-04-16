@@ -28,7 +28,7 @@ async def call_groq(prompt: str, api_key: str) -> str | None:
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You are a medical research assistant. Only answer from evidence provided, cite claims with IDs, and avoid direct prescriptions.",
+                        "content": "You are a medical research assistant. Only answer from the provided evidence. Keep the reply clear, short, and human-friendly. Do not show raw citation IDs like W123 or PMID:123 inside the prose. The UI will display the evidence separately. Avoid direct prescriptions.",
                     },
                     {"role": "user", "content": prompt},
                 ],
@@ -61,7 +61,8 @@ def build_prompt(query: str, evidence: list[dict[str, Any]]) -> str:
     return (
         f"Question: {query}\n\n"
         "You are a medical research assistant. Use only the evidence below."
-        " Every important claim must cite one of the bracketed IDs exactly as written."
-        " If evidence is weak or missing, say so clearly. Refuse dosage or prescription advice.\n\nEvidence:\n"
+        " Write a direct, user-friendly answer first, then a brief evidence summary."
+        " Do not print raw citation IDs inside the answer body. If evidence is weak or missing, say so clearly."
+        " Refuse dosage or prescription advice.\n\nEvidence:\n"
         + "\n".join(snippets)
     )

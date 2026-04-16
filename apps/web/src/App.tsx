@@ -16,6 +16,14 @@ function shortText(text: string, max = 160) {
   return text.length > max ? `${text.slice(0, max)}...` : text;
 }
 
+function cleanAssistantText(text: string) {
+  return text
+    .replace(/\[(W\d+|PMID:?\d+|NCT\d+)\]/g, "")
+    .replace(/\s{2,}/g, " ")
+    .replace(/\n\s+\n/g, "\n\n")
+    .trim();
+}
+
 const starterPrompts = [
   "Latest treatment options for stage 3 lung cancer",
   "Ongoing type 1 diabetes trials in the US",
@@ -259,7 +267,7 @@ export default function App() {
                     </div>
                     {message.role === "assistant" ? (
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {message.content || "Thinking..."}
+                        {cleanAssistantText(message.content || "Thinking...")}
                       </ReactMarkdown>
                     ) : (
                       <p>{message.content}</p>
