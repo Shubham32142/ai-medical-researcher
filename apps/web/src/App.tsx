@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Citation, Message, Trial } from "@curalink/types";
@@ -39,12 +39,19 @@ export default function App() {
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [sessionNotice, setSessionNotice] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [extrasById, setExtrasById] = useState<Record<string, AssistantExtras>>(
     {},
   );
 
   const canStart = disease.trim().length > 1 && location.trim().length > 1;
+
+  useEffect(() => {
+    if (!sessionNotice) return;
+    const timer = window.setTimeout(() => setSessionNotice(""), 2500);
+    return () => window.clearTimeout(timer);
+  }, [sessionNotice]);
 
   async function createSession(nextDisease?: string, nextLocation?: string) {
     const diseaseValue = (nextDisease ?? disease).trim();
@@ -67,6 +74,7 @@ export default function App() {
       setSessionId(data.sessionId);
       setMessages([]);
       setExtrasById({});
+      setSessionNotice(sessionId ? "New session ready." : "Session ready.");
       return data.sessionId as string;
     } catch {
       setError("Session setup failed. Please ensure the API is running.");
@@ -253,9 +261,11 @@ export default function App() {
             >
               {loading
                 ? "Starting..."
-                : sessionId
-                  ? "Start new session"
-                  : "Start session"}
+                : sessionNotice
+                  ? "Session ready"
+                  : sessionId
+                    ? "Start new session"
+                    : "Start session"}
             </button>
           </div>
 
@@ -283,6 +293,9 @@ export default function App() {
               Educational use only. This prototype summarizes research evidence
               and does not replace clinical advice.
             </p>
+            {sessionNotice ? (
+              <div className="notice">{sessionNotice}</div>
+            ) : null}
             {error ? <div className="alert">{error}</div> : null}
           </div>
 

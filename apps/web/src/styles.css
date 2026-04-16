@@ -210,6 +210,15 @@ textarea {
     text-align: center;
 }
 
+.notice {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(74, 196, 122, 0.12);
+    border: 1px solid rgba(95, 224, 146, 0.28);
+    color: #d5ffe3;
+}
+
 .alert {
     margin-top: 10px;
     padding: 10px 12px;
