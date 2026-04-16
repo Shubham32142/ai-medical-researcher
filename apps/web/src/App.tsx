@@ -57,7 +57,10 @@ export default function App() {
       const res = await fetch(`${apiBase}/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ disease: diseaseValue, location: locationValue }),
+        body: JSON.stringify({
+          disease: diseaseValue,
+          location: locationValue,
+        }),
       });
       if (!res.ok) throw new Error("Could not create session");
       const data = await res.json();
@@ -185,13 +188,20 @@ export default function App() {
     const newSessionMatch = item.match(/^Start a new session for (.+)$/i);
 
     if (switchMatch || newSessionMatch) {
-      const nextDisease = (switchMatch?.[1] || newSessionMatch?.[1] || "").trim();
+      const nextDisease = (
+        switchMatch?.[1] ||
+        newSessionMatch?.[1] ||
+        ""
+      ).trim();
       if (!nextDisease) return;
 
       setDisease(nextDisease);
       const nextSessionId = await createSession(nextDisease, location);
       if (switchMatch && nextSessionId) {
-        await ask(`What does the evidence say about diet and lifestyle for ${nextDisease}?`, nextSessionId);
+        await ask(
+          `What does the evidence say about diet and lifestyle for ${nextDisease}?`,
+          nextSessionId,
+        );
       }
       return;
     }
