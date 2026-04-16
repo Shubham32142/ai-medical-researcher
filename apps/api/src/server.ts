@@ -18,7 +18,12 @@ dotenv.config();
 const app = express();
 const port = Number(process.env.PORT || 4000);
 const aiServiceUrl = process.env.AI_SERVICE_URL || "http://127.0.0.1:8000";
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:5173";
+const allowedOrigins = (
+  process.env.CORS_ORIGIN || "http://localhost:5173,http://127.0.0.1:5173"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const sessionSchema = z.object({
   disease: z.string().min(2),
@@ -32,7 +37,17 @@ const chatSchema = z.object({
   message: z.string().min(2),
 });
 
-app.use(cors({ origin: corsOrigin }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (/\.vercel\.app$/i.test(origin)) return callback(null, true);
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.get("/health", (_req, res) => {
@@ -130,7 +145,8 @@ app.post("/api/chat", async (req, res) => {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache, no-transform",
     Connection: "keep-alive",
-    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Origin":
+      req.headers.origin || allowedOrigins[0] || "*",
   });
 
   writeEvent(res, "status", { stage: "fetching_sources" });

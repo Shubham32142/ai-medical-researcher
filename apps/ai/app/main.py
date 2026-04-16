@@ -279,43 +279,35 @@ async def synthesize(query: str, publications: list[dict[str, Any]], trials: lis
     evidence_ids = [item.get("id") for item in publications[:4]] + [item.get("nctId") for item in trials[:3]]
 
     if llm_text and any(identifier and identifier in llm_text for identifier in evidence_ids):
-        if prescription_like:
-            return (
-                "I can summarize research evidence, but I cannot recommend a dose or prescribe medication.\n\n"
-                + llm_text
-                + "\n\nPlease confirm treatment decisions with a qualified clinician."
-            )
-        return llm_text + "\n\nPlease confirm treatment decisions with a qualified clinician."
+        prefix = "I can summarize the evidence, but I cannot recommend a dose or prescribe medication.\n\n" if prescription_like else ""
+        return prefix + llm_text.strip() + "\n\n**Please discuss treatment decisions with a qualified clinician.**"
 
     if not publications and not trials:
-        return (
-            "I could not find enough live evidence right now. Please try a narrower disease name or a broader location."
-        )
+        return "I could not find enough live evidence right now. Please try a narrower disease name or a broader location."
 
-    intro = [
-        "Here is an evidence-backed summary for educational use only:",
-        "",
-    ]
+    lines = ["### Quick answer", ""]
 
     if prescription_like:
-        intro.append("I cannot provide a dose or prescribe medication, but I can summarize the relevant evidence.")
-        intro.append("")
+        lines.append("I cannot tell you what dose to take, but the current evidence suggests this should be discussed with your treating doctor because interactions depend on your cancer therapy.")
+    elif publications:
+        top_titles = ", ".join(item["title"] for item in publications[:2])
+        lines.append(f"I found recent evidence related to your question. The strongest papers point toward themes such as {top_titles}.")
+    else:
+        lines.append("I found some relevant evidence, but it is still limited and should be interpreted carefully.")
 
-    if publications:
-        intro.append("Top relevant publications:")
-        for item in publications[:4]:
-            snippet = item.get("abstract", "")[:180].strip()
-            intro.append(f"- {item['title']} [{item['id']}] {snippet}")
-        intro.append("")
+    lines.extend(["", "### What the evidence suggests", ""])
+
+    for item in publications[:3]:
+        snippet = item.get("abstract", "")[:150].strip()
+        lines.append(f"- **{item['title']}** [{item['id']}] — {snippet}")
 
     if trials:
-        intro.append("Relevant clinical trials:")
-        for trial in trials[:3]:
-            intro.append(f"- {trial['title']} [{trial['nctId']}] status: {trial['status']}")
+        lines.extend(["", "### Related trials", ""])
+        for trial in trials[:2]:
+            lines.append(f"- **{trial['title']}** [{trial['nctId']}] — status: {trial['status']}")
 
-    intro.append("")
-    intro.append("Please discuss any treatment or supplement decisions with a qualified clinician.")
-    return "\n".join(intro)
+    lines.extend(["", "**Please discuss treatment decisions with a qualified clinician.**"])
+    return "\n".join(lines)
 
 
 def build_followups(disease: str, location: str) -> list[str]:

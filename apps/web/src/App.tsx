@@ -11,6 +11,11 @@ type AssistantExtras = {
   followUps?: string[];
 };
 
+function shortText(text: string, max = 160) {
+  if (!text) return "";
+  return text.length > max ? `${text.slice(0, max)}...` : text;
+}
+
 const starterPrompts = [
   "Latest treatment options for stage 3 lung cancer",
   "Ongoing type 1 diabetes trials in the US",
@@ -262,8 +267,8 @@ export default function App() {
 
                     {extras?.citations?.length ? (
                       <div className="panel">
-                        <h3>Citations</h3>
-                        {extras.citations.map((citation) => (
+                        <h3>Key evidence</h3>
+                        {extras.citations.slice(0, 3).map((citation) => (
                           <a
                             key={citation.id}
                             href={citation.url}
@@ -275,6 +280,7 @@ export default function App() {
                             <span>
                               {citation.source.toUpperCase()} • {citation.year}
                             </span>
+                            <small>{shortText(citation.abstract)}</small>
                           </a>
                         ))}
                       </div>
@@ -283,7 +289,7 @@ export default function App() {
                     {extras?.trials?.length ? (
                       <div className="panel">
                         <h3>Trials</h3>
-                        {extras.trials.map((trial) => (
+                        {extras.trials.slice(0, 2).map((trial) => (
                           <a
                             key={trial.nctId}
                             href={trial.url}
@@ -295,6 +301,11 @@ export default function App() {
                             <span>
                               {trial.nctId} • {trial.status}
                             </span>
+                            <small>
+                              {trial.phase
+                                ? `Phase: ${trial.phase}`
+                                : "Clinical trial"}
+                            </small>
                           </a>
                         ))}
                       </div>
